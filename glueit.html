@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glue It - AI-Powered API & Data Transformation Engine</title>
+    <!-- Add this script at the very top of the document -->
+    <script>
+        // Define global functions before any HTML
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                window.scrollTo({
+                    top: element.offsetTop - 70,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        function toggleMobileMenu() {
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            if (hamburger && navLinks) {
+                hamburger.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            }
+        }
+
+        function closeMobileMenu() {
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            if (hamburger && navLinks) {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            }
+        }
+
+        function activateTab(tab, tabId) {
+            // Deactivate all tabs and contents
+            const allTabs = document.querySelectorAll('.tab');
+            const allContents = document.querySelectorAll('.tab-content');
+            
+            for (let i = 0; i < allTabs.length; i++) {
+                allTabs[i].classList.remove('active');
+            }
+            
+            for (let i = 0; i < allContents.length; i++) {
+                allContents[i].classList.remove('active');
+            }
+            
+            // Activate the selected tab and content
+            tab.classList.add('active');
+            const content = document.getElementById(tabId);
+            if (content) {
+                content.classList.add('active');
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --gray: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .cta-btn {
+            display: inline-block;
+            background-color: white;
+            color: var(--primary);
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid white;
+            cursor: pointer;
+        }
+        
+        .cta-btn:hover {
+            background-color: transparent;
+            color: white;
+        }
+        
+        .section {
+            padding: 4rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--primary);
+            font-size: 2rem;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .examples {
+            margin-top: 4rem;
+        }
+        
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tab {
+            padding: 0.8rem 1.5rem;
+            margin: 0 0.5rem 0.5rem 0;
+            background-color: #e9ecef;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .tab.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .tab:hover:not(.active) {
+            background-color: #dee2e6;
+        }
+        
+        .tab-content {
+            display: none;
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .code-block {
+            background-color: #282c34;
+            color: #abb2bf;
+            border-radius: 5px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .transformation {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .input, .output {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--primary);
+            padding: 1rem;
+        }
+        
+        .contact {
+            background-color: white;
+            border-radius: 10px;
+            padding: 3rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .contact-info {
+            margin-top: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        
+        .contact-item {
+            padding: 1.5rem;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-item:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .contact-item i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .contact-item:hover i {
+            color: white;
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .feature-card {
+                padding: 1.5rem;
+            }
+        }
+        
+        .success {
+            color: var(--success);
+        }
+        
+        .warning {
+            color: var(--warning);
+        }
+        
+        .json-key {
+            color: #e06c75;
+        }
+        
+        .json-value {
+            color: #98c379;
+        }
+        
+        .json-string {
+            color: #98c379;
+        }
+        
+        .json-number {
+            color: #d19a66;
+        }
+        
+        /* Added styles for responsive top navigation */
+        .topnav {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .topnav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+        }
+
+        .nav-logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+
+        .bar {
+            display: block;
+            width: 25px;
+            height: 3px;
+            margin: 5px auto;
+            background-color: var(--dark);
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            .hamburger.active .bar:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active .bar:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+
+            .hamburger.active .bar:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .nav-links {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                flex-direction: column;
+                background-color: white;
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+                padding: 1rem 0;
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .nav-links li {
+                margin: 1.5rem 0;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="topnav">
+        <div class="topnav-container">
+            <a href="#" class="nav-logo">Glue It</a>
+            <ul class="nav-links">
+                <li><a href="javascript:void(0);" data-section="features" onclick="scrollToSection('features'); closeMobileMenu();">Features</a></li>
+                <li><a href="javascript:void(0);" data-section="examples" onclick="scrollToSection('examples'); closeMobileMenu();">Examples</a></li>
+                <li><a href="javascript:void(0);" data-section="contact" onclick="scrollToSection('contact'); closeMobileMenu();">Contact</a></li>
+            </ul>
+            <div class="hamburger" onclick="toggleMobileMenu();">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">Glue It</div>
+            <p class="tagline">AI-Powered API & Data Transformation Engine</p>
+            <p style="margin-bottom: 2rem;">Transform raw APIs, legacy systems, or unstructured data into your ideal domain models using advanced AI</p>
+            <button onclick="scrollToSection('contact');" class="cta-btn" style="cursor: pointer; border: none;">Get Started</button>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section class="section" id="features">
+        <div class="container">
+            <h2 class="section-title">Key Use Cases</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <h3>Legacy System Modernization</h3>
+                    <p>Convert outdated SOAP/XML APIs to modern RESTful JSON, bridging the gap between legacy systems and modern applications.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Third-Party API Unification</h3>
+                    <p>Harmonize data from multiple vendors (e.g., Shopify, Stripe, Salesforce) into a single consistent schema.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Cross-Platform Data Aggregation</h3>
+                    <p>Merge IoT sensor data, CRM systems, or ERP databases into a unified model for comprehensive analytics.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Regulatory Compliance</h3>
+                    <p>Transform data to meet industry standards (e.g., HL7↔FHIR in healthcare, ISO 20022 in fintech) without rewriting your codebase.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+
+    <!-- Examples Section -->
+    <section class="section" id="examples">
+        <div class="container">
+            <h2 class="section-title">Industry Examples</h2>
+            <div class="tabs">
+                <div class="tab active" onclick="activateTab(this, 'ecommerce');">E-Commerce</div>
+                <div class="tab" onclick="activateTab(this, 'logistics');">Logistics/Courier</div>
+                <div class="tab" onclick="activateTab(this, 'healthcare');">Healthcare</div>
+                <div class="tab" onclick="activateTab(this, 'fintech');">Fintech</div>
+                <div class="tab" onclick="activateTab(this, 'social');">Social Media</div>
+                <div class="tab" onclick="activateTab(this, 'iot');">IoT/Manufacturing</div>
+            </div>
+            
+            <div class="tab-content active" id="ecommerce">
+                <h3>E-Commerce Integration</h3>
+                <p><strong>Problem:</strong> Suppliers use varying schemas (e.g., product_id vs. SKU, cost vs. price) making inventory management a nightmare.</p>
+                <p><strong>Solution:</strong> Map all APIs to a unified product model for seamless inventory and pricing analytics.</p>
+                
+                <div class="transformation">
+                    <div class="input">
+                        <h4>Input: Supplier A Product (JSON)</h4>
+                        <div class="code-block">
+<span class="json-key">{</span>
+  <span class="json-key">"product_id"</span>: <span class="json-string">"PRD-12345"</span>,
+  <span class="json-key">"product_name"</span>: <span class="json-string">"Premium Headphones"</span>,
+  <span class="json-key">"cost"</span>: <span class="json-number">79.99</span>,
+  <span class="json-key">"qty_available"</span>: <span class="json-number">125</span>,
+  <span class="json-key">"sku_code"</span>: <span class="json-string">"HDPHN-PRO-BLK"</span>
+<span class="json-key">}</span>
+                        </div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="output">
+                        <h4>Output: Unified Product Model</h4>
+                        <div class="code-block">
+<span class="json-key">{</span>
+  <span class="json-key">"sku"</span>: <span class="json-string">"HDPHN-PRO-BLK"</span>,
+  <span class="json-key">"name"</span>: <span class="json-string">"Premium Headphones"</span>,
+  <span class="json-key">"price"</span>: <span class="json-number">79.99</span>,
+  <span class="json-key">"inventory"</span>: <span class="json-number">125</span>,
+  <span class="json-key">"external_id"</span>: <span class="json-string">"PRD-12345"</span>
+<span class="json-key">}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="logistics">
+                <h3>Logistics/Courier API Integration</h3>
+                <p><strong>Problem:</strong> Each shipping carrier (FedEx, DHL, UPS) uses different tracking APIs and data formats, making it difficult to provide unified tracking to customers.</p>
+                <p><strong>Solution:</strong> Transform all carrier APIs into a standardized shipment tracking model for a unified dashboard.</p>
+                
+                <div class="transformation">
+                    <div class="input">
+                        <h4>Input: FedEx Tracking API (XML)</h4>
+                        <div class="code-block">
+<span style="color: #e06c75;">&lt;TrackingResponse&gt;</span>
+  <span style="color: #e06c75;">&lt;TrackingNumber&gt;</span><span style="color: #98c379;">7891234560</span><span style="color: #e06c75;">&lt;/TrackingNumber&gt;</span>
+  <span style="color: #e06c75;">&lt;ShipmentInfo&gt;</span>
+    <span style="color: #e06c75;">&lt;ServiceType&gt;</span><span style="color: #98c379;">FEDEX_EXPRESS</span><span style="color: #e06c75;">&lt;/ServiceType&gt;</span>
+    <span style="color: #e06c75;">&lt;Status&gt;</span><span style="color: #98c379;">IN_TRANSIT</span><span style="color: #e06c75;">&lt;/Status&gt;</span>
+    <span style="color: #e06c75;">&lt;EstimatedDelivery&gt;</span><span style="color: #98c379;">2025-03-25T10:30:00</span><span style="color: #e06c75;">&lt;/EstimatedDelivery&gt;</span>
+    <span style="color: #e06c75;">&lt;CurrentLocation&gt;</span>
+      <span style="color: #e06c75;">&lt;City&gt;</span><span style="color: #98c379;">Atlanta</span><span style="color: #e06c75;">&lt;/City&gt;</span>
+      <span style="color: #e06c75;">&lt;State&gt;</span><span style="color: #98c379;">GA</span><span style="color: #e06c75;">&lt;/State&gt;</span>
+      <span style="color: #e06c75;">&lt;Country&gt;</span><span style="color: #98c379;">US</span><span style="color: #e06c75;">&lt;/Country&gt;</span>
+    <span style="color: #e06c75;">&lt;/CurrentLocation&gt;</span>
+  <span style="color: #e06c75;">&lt;/ShipmentInfo&gt;</span>
+<span style="color: #e06c75;">&lt;/TrackingResponse&gt;</span>
+                        </div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="output">
+                        <h4>Output: Unified Tracking Model (JSON)</h4>
+                        <div class="code-block">
+<span class="json-key">{</span>
+  <span class="json-key">"tracking_id"</span>: <span class="json-string">"7891234560"</span>,
+  <span class="json-key">"carrier"</span>: <span class="json-string">"fedex"</span>,
+  <span class="json-key">"service_level"</span>: <span class="json-string">"express"</span>,
+  <span class="json-key">"status"</span>: <span class="json-string">"in_transit"</span>,
+  <span class="json-key">"eta"</span>: <span class="json-string">"2025-03-25T10:30:00"</span>,
+  <span class="json-key">"location"</span>: <span class="json-key">{</span>
+    <span class="json-key">"city"</span>: <span class="json-string">"Atlanta"</span>,
+    <span class="json-key">"state"</span>: <span class="json-string">"GA"</span>,
+    <span class="json-key">"country"</span>: <span class="json-string">"US"</span>
+  <span class="json-key">}</span>
+<span class="json-key">}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="healthcare">
+                <h3>Healthcare Data Transformation</h3>
+                <p><strong>Problem:</strong> EHR systems use incompatible formats (HL7 v2, FHIR, CDA) making interoperability difficult.</p>
+                <p><strong>Solution:</strong> Convert HL7 messages to FHIR-compliant APIs for telehealth and patient applications.</p>
+                
+                <div class="transformation">
+                    <div class="input">
+                        <h4>Input: HL7 v2 Patient Data</h4>
+                        <div class="code-block">
+<span style="color: #e06c75;">PID</span>|||<span style="color: #98c379;">PATID1234</span>^<span style="color: #d19a66;">5</span>^<span style="color: #98c379;">M11</span>^<span style="color: #98c379;">ADT1</span>^<span style="color: #98c379;">MR</span>^<span style="color: #98c379;">CHC</span>~<span style="color: #98c379;">123456</span>^^^<span style="color: #98c379;">CF</span>^<span style="color: #98c379;">PN</span>|<span style="color: #98c379;">DOE</span>^<span style="color: #98c379;">JOHN</span>^^^^|||<span style="color: #98c379;">M</span>||||||<span style="color: #98c379;">123 MAIN ST</span>^^<span style="color: #98c379;">ANYTOWN</span>^<span style="color: #98c379;">NY</span>^<span style="color: #98c379;">12345</span>
+                        </div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="output">
+                        <h4>Output: FHIR Patient Resource</h4>
+                        <div class="code-block">
+<span class="json-key">{</span>
+  <span class="json-key">"resourceType"</span>: <span class="json-string">"Patient"</span>,
+  <span class="json-key">"id"</span>: <span class="json-string">"PATID1234"</span>,
+  <span class="json-key">"name"</span>: [
+    <span class="json-key">{</span>
+      <span class="json-key">"family"</span>: <span class="json-string">"Doe"</span>,
+      <span class="json-key">"given"</span>: [<span class="json-string">"John"</span>]
+    <span class="json-key">}</span>
+  ],
+  <span class="json-key">"gender"</span>: <span class="json-string">"male"</span>,
+  <span class="json-key">"address"</span>: [
+    <span class="json-key">{</span>
+      <span class="json-key">"line"</span>: [<span class="json-string">"123 Main St"</span>],
+      <span class="json-key">"city"</span>: <span class="json-string">"Anytown"</span>,
+      <span class="json-key">"state"</span>: <span class="json-string">"NY"</span>,
+      <span class="json-key">"postalCode"</span>: <span class="json-string">"12345"</span>
+    <span class="json-key">}</span>
+  ]
+<span class="json-key">}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="fintech">
+                <h3>Fintech Data Standardization</h3>
+                <p><strong>Problem:</strong> Banking APIs return nested transaction_amount; fraud tools need flat amount fields.</p>
+                <p><strong>Solution:</strong> Flatten complex structures and standardize currency formats for unified financial reporting.</p>
+                
+                <div class="transformation">
+                    <div class="input">
+                        <h4>Input: Bank API Transaction</h4>
+                        <div class="code-block">
+<span class="json-key">{</span>
+  <span class="json-key">"txn_id"</span>: <span class="json-string">"TXN-1001"</span>,
+  <span class="json-key">"transaction_details"</span>: <span class="json-key">{</span>
+    <span class="json-key">"amount"</span>: <span class="json-key">{</span>
+      <span class="json-key">"value"</span>: <span class="json-string">"500.00"</span>,
+      <span class="json-key">"currency"</span>: <span class="json-string">"USD"</span>
+    <span class="json-key">}</span>,
+    <span class="json-key">"timestamp"</span>: <span class="json-string">"2025-03-22T14:22:17Z"</span>
+  <span class="json-key">}</span>,
+  <span class="json-key">"merchant"</span>: <span class="json-key">{</span>
+    <span class="json-key">"id"</span>: <span class="json-string">"MERCH-456"</span>,
+    <span class="json-key">"name"</span>: <span class="json-string">"Coffee Shop"</span>
+  <span class="json-key">}</span>
+<span class="json-key">}</span>
+                        </div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="output">
+                        <h4>Output: Standardized Transaction</h4>
+                        <div class="code-block">
+<span class="json-key">{</span>
+  <span class="json-key">"transaction_id"</span>: <span class="json-string">"TXN-1001"</span>,
+  <span class="json-key">"amount"</span>: <span class="json-number">500.00</span>,
+  <span class="json-key">"currency"</span>: <span class="json-string">"USD"</span>,
+  <span class="json-key">"date"</span>: <span class="json-string">"2025-03-22"</span>,
+  <span class="json-key">"time"</span>: <span class="json-string">"14:22:17"</span>,
+  <span class="json-key">"merchant_id"</span>: <span class="json-string">"MERCH-456"</span>,
+  <span class="json-key">"merchant_name"</span>: <span class="json-string">"Coffee Shop"</span>
+<span class="json-key">}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="social">
+                <h3>Social Media Integration</h3>
+                <p><strong>Problem:</strong> Different social platforms (Twitter, Facebook, Instagram) have incompatible post/engagement data structures.</p>
+                <p><strong>Solution:</strong> Unify social data into a consistent engagement model for cross-platform analytics.</p>
+                
+                <div class="transformation">
+                    <div class="input">
+                        <h4>Input: Twitter API Post Data</h4>
+                        <div class="code-block">
+<span class="json-key">{</span>
+  <span class="json-key">"id_str"</span>: <span class="json-string">"1234567890"</span>,
+  <span class="json-key">"created_at"</span>: <span class="json-string">"Wed Mar 22 15:35:42 +0000 2025"</span>,
+  <span class="json-key">"text"</span>: <span class="json-string">"Check out our new API transformation tool! #GlueIt #APITools"</span>,
+  <span class="json-key">"user"</span>: <span class="json-key">{</span>
+    <span class="json-key">"screen_name"</span>: <span class="json-string">"glue_it_api"</span>,
+    <span class="json-key">"followers_count"</span>: <span class="json-number">5280</span>
+  <span class="json-key">}</span>,
+  <span class="json-key">"favorite_count"</span>: <span class="json-number">42</span>,
+  <span class="json-key">"retweet_count"</span>: <span class="json-number">18</span>
+<span class="json-key">}</span>
+                        </div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="output">
+                        <h4>Output: Unified Social Engagement Model</h4>
+                        <div class="code-block">
+<span class="json-key">{</span>
+  <span class="json-key">"post_id"</span>: <span class="json-string">"twitter-1234567890"</span>,
+  <span class="json-key">"platform"</span>: <span class="json-string">"twitter"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-string">"2025-03-22T15:35:42Z"</span>,
+  <span class="json-key">"content"</span>: <span class="json-string">"Check out our new API transformation tool! #GlueIt #APITools"</span>,
+  <span class="json-key">"author"</span>: <span class="json-string">"glue_it_api"</span>,
+  <span class="json-key">"audience_size"</span>: <span class="json-number">5280</span>,
+  <span class="json-key">"engagement"</span>: <span class="json-key">{</span>
+    <span class="json-key">"likes"</span>: <span class="json-number">42</span>,
+    <span class="json-key">"shares"</span>: <span class="json-number">18</span>,
+    <span class="json-key">"total"</span>: <span class="json-number">60</span>
+  <span class="json-key">}</span>,
+  <span class="json-key">"hashtags"</span>: [<span class="json-string">"GlueIt"</span>, <span class="json-string">"APITools"</span>]
+<span class="json-key">}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="iot">
+                <h3>IoT/Manufacturing Data Transformation</h3>
+                <p><strong>Problem:</strong> Sensor data uses proprietary XML; dashboards require JSON for visualization.</p>
+                <p><strong>Solution:</strong> Transform real-time telemetry into analytics-ready schemas for operational insights.</p>
+                
+                <div class="transformation">
+                    <div class="input">
+                        <h4>Input: Sensor Telemetry (XML)</h4>
+                        <div class="code-block">
+<span style="color: #e06c75;">&lt;SensorData&gt;</span>
+  <span style="color: #e06c75;">&lt;SensorID&gt;</span><span style="color: #98c379;">TEMP-101</span><span style="color: #e06c75;">&lt;/SensorID&gt;</span>
+  <span style="color: #e06c75;">&lt;ReadingTime&gt;</span><span style="color: #98c379;">2025-03-22T16:45:22</span><span style="color: #e06c75;">&lt;/ReadingTime&gt;</span>
+  <span style="color: #e06c75;">&lt;Values&gt;</span>
+    <span style="color: #e06c75;">&lt;Temperature units="C"&gt;</span><span style="color: #d19a66;">37.2</span><span style="color: #e06c75;">&lt;/Temperature&gt;</span>
+    <span style="color: #e06c75;">&lt;Humidity units="%"&gt;</span><span style="color: #d19a66;">58.4</span><span style="color: #e06c75;">&lt;/Humidity&gt;</span>
+    <span style="color: #e06c75;">&lt;Pressure units="kPa"&gt;</span><span style="color: #d19a66;">101.3</span><span style="color: #e06c75;">&lt;/Pressure&gt;</span>
+  <span style="color: #e06c75;">&lt;/Values&gt;</span>
+  <span style="color: #e06c75;">&lt;BatteryLevel&gt;</span><span style="color: #d19a66;">78</span><span style="color: #e06c75;">&lt;/BatteryLevel&gt;</span>
+<span style="color: #e06c75;">&lt;/SensorData&gt;</span>
+                        </div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="output">
+                        <h4>Output: Dashboard-Ready Data (JSON)</h4>
+                        <div class="code-block">
+<span class="json-key">{</span>
+  <span class="json-key">"device_id"</span>: <span class="json-string">"TEMP-101"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-string">"2025-03-22T16:45:22"</span>,
+  <span class="json-key">"readings"</span>: <span class="json-key">{</span>
+    <span class="json-key">"temperature"</span>: <span class="json-number">37.2</span>,
+    <span class="json-key">"humidity"</span>: <span class="json-number">58.4</span>,
+    <span class="json-key">"pressure"</span>: <span class="json-number">101.3</span>
+  <span class="json-key">}</span>,
+  <span class="json-key">"battery"</span>: <span class="json-number">78</span>,
+  <span class="json-key">"units"</span>: <span class="json-key">{</span>
+    <span class="json-key">"temperature"</span>: <span class="json-string">"C"</span>,
+    <span class="json-key">"humidity"</span>: <span class="json-string">"%"</span>,
+    <span class="json-key">"pressure"</span>: <span class="json-string">"kPa"</span>
+  <span class="json-key">}</span>
+<span class="json-key">}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section - NOW PROPERLY PLACED OUTSIDE THE TABS -->
+    <section class="section" id="contact">
+        <div class="container">
+            <h2 class="section-title">Contact Us</h2>
+            <div class="contact">
+                <p>Ready to transform your data and APIs? Get in touch with our team!</p>
+                
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <h3>Email</h3>
+                        <p>glueitai@gmail.com</p>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <h3>Phone</h3>
+                        <p>+91 88792 89551</p>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <h3>WhatsApp</h3>
+                        <a href="https://wa.me/+918879289551" target="_blank" class="cta-btn" style="background-color: #25D366; color: white; border: none; margin-top: 10px;">
+                            Message Us
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Glue It. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
